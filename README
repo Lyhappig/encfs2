@@ -1,0 +1,88 @@
+---Files---
+
+Makefile             - GNU makefile to build all relevant code
+README               - 当前文件
+encfuse.h            - 用户态文件系统加密头文件
+encfuse.c            - 用户态文件系统加密文件
+file-crypt.h         - 国密加密头文件
+file-crypt.c         - 国密加密文件
+access-control.h     - 访问控制头文件
+access-control.c     - 访问控制文件
+
+---Dependencies---
+
+```
+yum install attr
+
+yum install -y gcc gcc-c++
+
+yum install make
+
+yum install -y openssl openssl-devel
+
+yum install -y fuse fuse-devel
+```
+
+---prepare---
+
+cd encfuse
+mkdir .secret && cd .secret
+touch user
+touch process
+cd ..
+chmod 700 .secret
+
+打开 /etc/fuse.conf 文件
+将user_allow_other选项开启
+
+---Examples---
+
+***Building***
+
+Build All:
+  make
+
+Clean:
+  make clean
+
+***FUSE Examples***
+
+挂载参数：
+  ./encfuse <flags> ... <mount directory> <mirror directory> <keyphrase>
+示例挂载:
+  ./encfuse ./mnt ./test 12345
+挂载并允许其他用户访问:
+  ./encfuse -o allow_other ./mnt ./test 12345
+绑定stdout和stderr流:
+  ./encfuse -f ./mnt ./test 12345
+取消挂载:
+  fusermount -u <Mount Point>
+  umount <Mount Point>
+强制取消挂载
+  ps aux | grep "mnt"
+  kill -9 pid
+  umount -l <Mount Point>
+  
+
+***查看挂载信息***
+
+mount
+
+cat /proc/mounts | grep "mnt"
+
+---warning---
+
+若挂载目录不为空，会报错：
+
+fuse: mountpoint is not empty
+fuse: if you are sure this is safe, use the 'nonempty' mount option
+Internal FUSE error, please try again.
+
+需要加上nonempty参数
+
+
+
+
+
+
+
