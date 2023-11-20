@@ -1,0 +1,1 @@
+./bin/encfs -o allow_other ./mnt ./temp 12345
